@@ -507,7 +507,6 @@ public class Parser {
             if(ordinal < 26){
                 String action = parseTable[state][ordinal];
 
-
                 if(action == ""){
                     System.out.println("==========ERROR IN THE PARSING==========");
                     System.out.println("CANNOT PARSE : " + currentInputToken.getTokenType());
@@ -515,6 +514,11 @@ public class Parser {
                     System.out.println("Ordinal : " + ordinal);
                     return null;
                 }
+                else if(action == "Accept"){
+                    System.out.println("PROGRAM ACCEPTED");
+                    return stack.pop();
+                }
+
                 switch(action.charAt(0)){
                     case 'S':
                         System.out.println("Action : " + action + " Shifting " + currentInputToken.getTokenType() + " with State " + action.substring(1));
@@ -523,11 +527,6 @@ public class Parser {
                         stack.push(n);
                         currentInputToken = scan.ConsumeNextToken();
 
-                        if(endoftheline){
-                            //The program is finished
-                            //TODO: EXAMINE THIS FIRST BECAUSE WERE NOT SURE WHAT WERE POPPING
-                            return stack.pop();
-                        }
 
                         if (!Scanner.IsInputEnd()) {
                             System.out.println("END OF SCANNER REACHED");
@@ -542,7 +541,7 @@ public class Parser {
                         Node m = new Node(new Token(rr.production), -1);
 
                         for(int i = 0; i< rr.popAmount; i++){
-                            m.nodeChildren.addLast(stack.pop());
+                            m.nodeChildren.addFirst(stack.pop());
                         }
                         System.out.println(rr.production + " ORDINAL " + rr.production.ordinal());
                         String newState = gotoTable[stack.peek().nodeState][rr.production.ordinal()-32];
@@ -572,4 +571,30 @@ public class Parser {
         }
         return root;
     }
+
+    static Stack<Node> dfsStack = new Stack<Node>();
+    static String treeVal = "";
+    static int index = 0;
+
+    public static String DepthFirstTraversal(Node parent){
+
+        //System.out.println("DEPTH TOKEN: " + parent.nodeToken.getTokenType());
+        treeVal += "[";
+        treeVal += parent.nodeToken.getTokenType().toString() + " # ";
+
+        if(!parent.nodeChildren.isEmpty()) {
+            treeVal += "[";
+            for (Node child : parent.nodeChildren) {
+                DepthFirstTraversal(child);
+                treeVal += ",";
+            }
+            treeVal += "]";
+        }
+        else{
+            treeVal += "[]";
+        }
+        treeVal += "]";
+        return treeVal;
+    }
+
 }

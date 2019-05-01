@@ -1,3 +1,4 @@
+import GRTree.NPLviewer;
 import TokenLibrary.*;
 
 import java.io.FileReader;
@@ -6,7 +7,7 @@ import java.io.IOException;
 
 import java.util.*;
 
-public class Tester {
+public class Testers {
 
     public static void main(String[] args) {
 
@@ -54,6 +55,16 @@ public class Tester {
 
         Scanner scan2 = new Scanner(reservedWords, identifiers, "‪C:\\Users\\Personal\\Desktop\\Weary.txt");
         Parser parse = new Parser(scan2);
-        parse.startParse();
+        Node root = parse.startParse();
+
+        if(root != null){
+            System.out.println("STARTING SEARCH");
+            String treeSyntax = parse.DepthFirstTraversal(root);
+            System.out.println(treeSyntax);
+
+            new NPLviewer("C:\\Users\\Personal\\Desktop\\grtreefile.txt");
+        }
     }
+
+
 }
